@@ -50,7 +50,7 @@ class ProdukItem(models.Model):
         return reverse("store:remove-from-cart", kwargs={
             "slug": self.slug
             })
-    
+
 class OrderProdukItem(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     ordered = models.BooleanField(default=False)
@@ -79,6 +79,34 @@ class OrderProdukItem(models.Model):
             return self.get_total_hemat_item()
         return 0
 
+class AlamatPengiriman(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    alamat_1 = models.CharField(max_length=100)
+    alamat_2 = models.CharField(max_length=100)
+    negara = models.CharField(max_length=100)
+    kode_pos = models.CharField(max_length=20)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.alamat_1}"
+class Meta:
+        verbose_name_plural = 'AlamatPengiriman'
+
+class Payment(models.Model):
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True)
+    amount = models.FloatField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+    payment_option = models.CharField(choices=PILIHAN_PEMBAYARAN, max_length=1)
+    charge_id = models.CharField(max_length=50)
+
+    def __self__(self):
+        return self.user.username
+    
+    def __str__(self):
+        return f"{self.user.username} - {self.payment_option} - {self.amount}"
+    
+    class Meta:
+        verbose_name_plural = 'Payment'
+
 
 class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -103,33 +131,5 @@ class Order(models.Model):
         total = 0
         for order_produk_item in self.produk_items.all():
             total += order_produk_item.get_total_hemat_keseluruhan()
-        return total
-
-class AlamatPengiriman(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    alamat_1 = models.CharField(max_length=100)
-    alamat_2 = models.CharField(max_length=100)
-    negara = models.CharField(max_length=100)
-    kode_pos = models.CharField(max_length=20)
-
-    def __str__(self):
-        return f"{self.user.username} - {self.alamat_1}"
-
-    class Meta:
-        verbose_name_plural = 'AlamatPengiriman'
-
-class Payment(models.Model):
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True)
-    amount = models.FloatField()
-    timestamp = models.DateTimeField(auto_now_add=True)
-    payment_option = models.CharField(choices=PILIHAN_PEMBAYARAN, max_length=1)
-    charge_id = models.CharField(max_length=50)
-
-    def __self__(self):
-        return self.user.username
-    
-    def __str__(self):
-        return f"{self.user.username} - {self.payment_option} - {self.amount}"
-    
-    class Meta:
-        verbose_name_plural = 'Payment'
+        return total 
+ 
