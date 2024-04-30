@@ -9,8 +9,5 @@ class IndexView(TemplateView):
 class AboutView(TemplateView):
     template_name = 'about.html'
 
-class ContactView(TemplateView):
-    template_name = 'contact.html'
-
 class ShopView(TemplateView):
     template_name = 'shop.html'
